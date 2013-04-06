@@ -1,67 +1,104 @@
-# [Laravel](http://laravel.com) - A PHP Framework For Web Artisans
+# API
 
-Laravel is a clean and classy framework for PHP web development. Freeing you
-from spaghetti code, Laravel helps you create wonderful applications using
-simple, expressive syntax. Development should be a creative experience that you
-enjoy, not something that is painful. Enjoy the fresh air.
 
-[Official Website & Documentation](http://laravel.com)
+## Set the base api url for ease of use
 
-## Feature Overview
 
-- Simple routing using Closures or controllers.
-- Views and templating.
-- Driver based session and cache handling.
-- Database abstraction with query builder.
-- Authentication.
-- Migrations.
-- PHPUnit Integration.
-- A lot more.
+    var API_BASE_URL = "http://178.79.174.128/";
 
-## A Few Examples
 
-### Hello World:
+## PUBLISH entry to api
 
-```php
-<?php
 
-Route::get('/', function()
-{
-	return "Hello World!";
-});
-```
+    $.ajax({
+        type : "POST",
+        url  : API_BASE_URL + "entries/add",
+        data : {
+            email       : "",
+            name        : "", // optional
+            description : "",
+            data        : {
+                // json to serialize
+            }
+        },
+        dataType   : "json",
+        statusCode : {
+            201: function(data) {
+                var entry_id = data.id;
 
-### Passing Data To Views:
+                // use entry_id in the get url below
+            },
+            400: function(data) {
+                // some validation error
+                // data is an array of error messages
+                alert(data.join(", "));
+            }
+        }
+    });
 
-```php
-<?php
 
-Route::get('user/(:num)', function($id)
-{
-	$user = DB::table('users')->find($id);
+## RETRIEVE entry from api
 
-	return View::make('profile')->with('user', $user);
-});
-```
 
-### Redirecting & Flashing Data To The Session:
+    $.ajax({
+        type       : "GET",
+        url        : API_BASE_URL + "entries/get" + entry_id,
+        dataType   : "json",
+        statusCode : {
+            200: function(entry) {
+                console.log(entry);
 
-```php
-<?php
+                // you might have to eval() entry.data
+                var unserialized_data = eval(entry.data());
+            },
+            404: function() {
+                // entry not found
+            }
+        }
+    });
 
-return Redirect::to('profile')->with('message', 'Welcome Back!');
-```
 
-## Contributing to Laravel
+## VOTE on an entry
 
-Contributions are encouraged and welcome; however, please review the Developer
-Certificate of Origin in the "license.txt" file included in the repository. All
-commits must be signed off using the `-s` switch.
 
-```bash
-git commit -s -m "this commit will be signed off automatically!"
-```
+    $.ajax({
+        type : "POST",
+        url  : API_BASE_URL + "votes/vote",
+        data : {
+            email    : "",
+            entry_id : entry_id,
+            like     : // 1 for like, 0 for dislike,
+        },
+        dataType   : "json",
+        statusCode : {
+            201: function(data) {
+                console.log(data);
+                // you will get stats about likes, dislikes and total votes
+            },
+            400: function(data) {
+                // some validation error
+                // data is an array of error messages
+                alert(data.join(", "));
+            }
+        }
+    });
 
-## License
 
-Laravel is open-sourced software licensed under the MIT License.
+## Get votes data for entry
+
+
+    $.ajax({
+        type : "GET",
+        url  : API_BASE_URL + "votes/get/" + entry_id,
+        dataType   : "json",
+        statusCode : {
+            200: function(data) {
+                console.log(data);
+                // you will get stats about likes, dislikes and total votes
+            },
+            404: function() {
+                // entry not found
+            }
+        }
+    });
+
