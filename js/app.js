@@ -1,10 +1,11 @@
 var state, difference;
+
+
 sliders = ['macro', 'agriculture', 'health', 'water', 'energy', 'urban'];
 sliderConfig = {orientation: "vertical",
     range: "min",
     min: 0,
     max: 100,
-    value: 50,
     slide: function(event,ui) {updateSliders(event, ui);},
     start: function(event, ui) {saveState(event, ui);}
   }
@@ -41,9 +42,26 @@ function updateSliders(event, ui) {
     $(labelSelector).text(change);
   }
 
+function init () {
+  $('#slider-macro').slider('value', 20);
+  $('#slider-agriculture').slider('value', 20);
+  $('#slider-health').slider('value', 10);
+  $('#slider-water').slider('value', 20);
+  $('#slider-energy').slider('value', 20);
+  $('#slider-urban').slider('value', 10);
+  sliders.forEach(setLabels);
+}
+
+function setLabels(element) {
+    sliderSelector = "#slider-"+element
+    labelSelector = "#label-"+element;
+    $(labelSelector).text($(sliderSelector).slider("value"));
+
+}
 
 $( document ).ready(function() {
   createSliders();
+  init();
 });
 
 //  $(function() {
