@@ -7,7 +7,7 @@ class Vote extends BaseModel
      *
      * @var array
      */
-    public static $accessible = array('like');
+    public static $accessible = array('like', 'email');
 
 
     /**
@@ -18,5 +18,6 @@ class Vote extends BaseModel
     public static $rules = array(
 		'like' => 'required|integer',
         'ip' => 'required',
+        'email' => 'required|email',
     );
 }
