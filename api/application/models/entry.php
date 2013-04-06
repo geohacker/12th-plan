@@ -7,7 +7,7 @@ class Entry extends BaseModel
      *
      * @var array
      */
-    public static $accessible = array('description', 'data');
+    public static $accessible = array('description', 'data', 'email', 'name');
 
 
     /**
@@ -16,8 +16,9 @@ class Entry extends BaseModel
      * @var array
      */
     public static $rules = array(
-		'description' => 'required',
-		'data'        => 'required',
+        'description' => 'required',
+        'data'        => 'required',
+        'email'       => 'required|email',
     );
 
     /**

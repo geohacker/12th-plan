@@ -18,17 +18,25 @@ class Votes_Controller extends Base_Controller
 		$vote->entry_id = $entry->id;
 
 		if ($vote->validate()) {
-			if ($vote->save()) {
-				return Response::json(array(
-					'likes'    => $entry->likes()->count(),
-					'dislikes' => $entry->dislikes()->count(),
-					'total'    => $entry->votes()->count(),
-				), 201);
+			// make sure this is unique
+			$duplicate = Vote::where('entry_id', '=', $entry->id)
+				->where('email', '=', $vote->email)->first();
+
+			if (! $duplicate) {
+				if ($vote->save()) {
+					return Response::json(array(
+						'likes'    => $entry->likes()->count(),
+						'dislikes' => $entry->dislikes()->count(),
+						'total'    => $entry->votes()->count(),
+					), 201);
+				} else {
+					return Response::error(500);
+				}
 			} else {
-				return Response::error(500);
+				return Response::json(array('You have already cast your vote'), 400);
 			}
 		} else {
-			return Response::json($votes->errors()->all(), 400);
+			return Response::json($vote->errors()->all(), 400);
 		}
 	}
 
