@@ -17,7 +17,7 @@
 
 <body>
 
-  <div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid">
         <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -36,10 +36,31 @@
             <li><a href="#energy">Energy</a></li>
             <li><a href="#education">Urban Development</a></li>
           </ul>
+          <ul class="nav pull-right">
+            <li><button class="btn btn-success" href="like">Like <i class="icon-thumbs-up icon-white"></i></button></li>
+             <li class="divider-vertical"></li>
+            <li><button class="btn btn-inverse" href="dislike">Dislike <i class="icon-thumbs-down icon-white"></i></button></li>
+             <li class="divider-vertical"></li>
+          <li><button class="btn btn-primary">Publish</button></li>
+
+          </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
   </div>
+
+<!--   <div class="navbar navbar-fixed-bottom">
+    <div class="navbar-inner">
+      <div class="container">
+          <ul class="nav pull-right">
+            <li><button class="btn btn-success" href="like">Like <i class="icon-thumbs-up icon-white"></i></button></li>
+             <li class="divider-vertical"></li>
+            <li><button class="btn btn-inverse" href="dislike">Dislike <i class="icon-thumbs-down icon-white"></i></button></li>
+          </ul>
+          <button class="btn btn-primary">Publish</button>
+      </div>
+    </div>
+  </div> -->
 
   <div class="container-fluid">
     <div id="vis" class="row-fluid">
@@ -95,16 +116,31 @@
       </div>
     </div><!--/row-->
 
-<!--     <div class="row-fluid">
-Sector 1
-</div> -->
-<hr>
+    <div class="row-fluid">
+      <div class="span6 offset3" id="macro"></div>
+    </div>
 
+        <div class="row-fluid">
+      <div class="span6 offset3" id="agriculture"></div>
+    </div>
+
+        <div class="row-fluid">
+      <div class="span6 offset3" id="health"></div>
+    </div>
+
+        <div class="row-fluid">
+      <div class="span6 offset3" id="water"></div>
+    </div>
+
+        <div class="row-fluid">
+      <div class="span6 offset3" id="energy"></div>
+    </div>
+
+        <div class="row-fluid">
+      <div class="span6 offset3" id="urban"></div>
+    </div>
 
 </div><!--/.fluid-container-->
-<footer>
-  <p class="text-center">Built at the 12th Plan Hackathon</p>
-</footer>
 
 <!-- Le javascript
   ================================================== -->

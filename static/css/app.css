@@ -53,3 +53,15 @@ body {
 .labels {
   padding-top: 10px;
 }
+
+.ui-widget-content {
+    background: #eee !important;
+    border: none !important;
+}
+
+.ui-widget-header {
+    background: steelblue !important;
+    border: none !important;
+    color: #222222;
+    font-weight: bold;
+}
