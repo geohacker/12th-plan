@@ -31,3 +31,25 @@ body {
 .bar {
   fill: steelblue;
 }
+
+.ui-slider-vertical {
+    height: 350px !important;
+    width: 65px !important;
+}
+
+.ui-slider .ui-slider-handle {
+    cursor: default;
+    height: 8px;
+    position: absolute;
+    width: 70px;
+    z-index: 2;
+}
+
+#vis {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.labels {
+  padding-top: 10px;
+}
