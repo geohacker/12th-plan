@@ -113,4 +113,5 @@ Route::filter('auth', function()
 
 Route::controller(array(
     'entries',
+    'votes',
 ));
