@@ -1,7 +1,7 @@
 (function () {
 
   var sliders = {
-    sdata: {
+    original_data: {
       "macro"       : 15,
       "agriculture" : 20,
       "health"      : 10,
@@ -9,6 +9,8 @@
       "energy"      : 20,
       "urban"       : 20
     },
+
+    sdata: {},
 
     renderSliders: function (data) {
       var x, selector;
@@ -83,7 +85,13 @@
     },
 
     init: function () {
+      sliders.sdata = sliders.original_data;
       sliders.renderSliders(sliders.sdata);
+
+      // bind reset
+      $("#reset-main-graph").click(function () {
+        sliders.renderData(sliders.original_data);
+      });
 
     }
   };
@@ -182,7 +190,6 @@ function agriRedraw(newValue) {
   .delay(50)
   .attr("y", function(d) { return h - x(d); });
 }
-
 
 //  $(function() {
 //   $( "#slider-macro" ).slider({
