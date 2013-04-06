@@ -41,10 +41,29 @@
     </div>
   </div>
 
+  <div class="navbar navbar-fixed-bottom">
+    <div class="navbar-inner">
+      <div class="container-fluid">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="nav-collapse collapse">
+          <ul class="nav pull-right">
+            <li><button class="btn btn-success" href="like">Like <i class="icon-thumbs-up icon-white"></i></button></li>
+             <li class="divider-vertical"></li>
+            <li><button class="btn btn-inverse" href="dislike">Dislike <i class="icon-thumbs-down icon-white"></i></button></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+  </div>
+
   <div class="container-fluid">
     <div id="vis" class="row-fluid">
-      <div id="chart" class="span8">
-
+      <center>
+      <div id="chart" class="span12">
         <div class="row-fluid">
           <div id="label-macro" class="span2"></div>
           <div id="label-agriculture" class="span2"></div>
@@ -87,24 +106,10 @@
           <div class="span2">Urban Development</div>
         </div>
       </div>
-
-      <div id="controls" class="span4">
-        <div class="row-fluid"> 
-          <div id="slider_macro"></div>
-        </div>
-      </div>
+    </center>
     </div><!--/row-->
 
-<!--     <div class="row-fluid">
-Sector 1
-</div> -->
-<hr>
-
-
 </div><!--/.fluid-container-->
-<footer>
-  <p class="text-center">Built at the 12th Plan Hackathon</p>
-</footer>
 
 <!-- Le javascript
   ================================================== -->
