@@ -26,4 +26,14 @@ class Entries_Controller extends Base_Controller
 			return Response::json($entry->errors()->all(), 400);
 		}
 	}
+
+	public function get_get($id)
+	{
+		$entry = Entry::find($id);
+
+		if (! $entry)
+			return Response::error(404);
+
+		return Response::eloquent($entry);
+	}
 }
