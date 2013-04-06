@@ -1,68 +1,93 @@
-var state, difference;
+(function () {
 
+  var sliders = {
+    sdata: {
+      "macro"       : 15,
+      "agriculture" : 20,
+      "health"      : 10,
+      "water"       : 15,
+      "energy"      : 20,
+      "urban"       : 20
+    },
 
-sliders = ['macro', 'agriculture', 'health', 'water', 'energy', 'urban'];
-sliderConfig = {orientation: "vertical",
-    range: "min",
-    min: 0,
-    max: 100,
-    slide: function(event,ui) {updateSliders(event, ui);},
-    start: function(event, ui) {saveState(event, ui);}
-  }
+    renderSliders: function (data) {
+      var x, selector;
 
-function saveState(event, ui) {
-  state = 0;
-  state = ui.value;
-}
+      for (x in data) {
+        if (data.hasOwnProperty(x)) {
+          $(".main-sliders .slider[data-name='" + x + "']").slider({
+            orientation : "vertical",
+            range       : "min",
+            min         : 0,
+            max         : 100,
+            value       : data[x],
+            slide      : function (e, ui) {
+              sliders.changeState($(e.target), ui.value);
+            }
+          });
 
-function createSliders(slider) {
-  for(var i=0; i<6; i++) {
-    sliderSelector = "#slider-"+sliders[i];
-    labelSelector = "#label-"+sliders[i];
-    $(sliderSelector).slider(sliderConfig);
-    $(labelSelector).text($(sliderSelector).slider('value'));
-  }
-}
+          $(".slabels .slabel[data-name='" + x + "']").html(Math.floor(data[x]));
+        }
+      }
 
-function updateSliders(event, ui) {
-  difference = 0;
-  difference = ui.value - state;
-  sliders.forEach(changeState);
-  slider = event.target.attributes['id'].nodeValue.split('-')[1];
-  selector = "#label-"+slider;
-  $(selector).text(ui.value);
-}
+    },
 
-  function changeState (element) {
-    selectortoChange = "#slider-"+element;
-    currentValue = $(selectortoChange).slider("value");
-    change = currentValue+(difference/5);
-    $(selectortoChange).slider("value", change);
-    labelSelector = "#label-"+element;
-    $(labelSelector).text(change);
-  }
+    renderData: function (data) {
+      var x, selector;
 
-function init () {
-  $('#slider-macro').slider('value', 20);
-  $('#slider-agriculture').slider('value', 20);
-  $('#slider-health').slider('value', 10);
-  $('#slider-water').slider('value', 20);
-  $('#slider-energy').slider('value', 20);
-  $('#slider-urban').slider('value', 10);
-  sliders.forEach(setLabels);
-}
+      for (x in data) {
+        if (data.hasOwnProperty(x)) {
+          $(".main-sliders .slider[data-name='" + x + "']").slider("value", data[x]);
 
-function setLabels(element) {
-    sliderSelector = "#slider-"+element
-    labelSelector = "#label-"+element;
-    $(labelSelector).text($(sliderSelector).slider("value"));
+          $(".slabels .slabel[data-name='" + x + "']").html(Math.floor(data[x]));
+        }
+      }
+    },
 
-}
+    get_newdata: function (oldData, key, newValue) {
+      var ratios = {}, newdata = {}, x, total = 0, difference = 0, remaining = 0;
 
-$( document ).ready(function() {
-  createSliders();
-  init();
-});
+      for (x in oldData) {
+        if (oldData.hasOwnProperty(x)) {
+          total = total + oldData[x];
+        }
+      }
+
+      difference = total - newValue;
+      remaining = total - oldData[key];
+
+      for (x in oldData) {
+        if (oldData.hasOwnProperty(x) && x != key) {
+          ratios[x] = remaining > 0 ? oldData[x] / remaining : 0;
+        }
+      }
+
+      for (x in oldData) {
+        if (oldData.hasOwnProperty(x) && x != key) {
+          newdata[x] = ratios[x] * difference;
+        }
+      }
+      newdata[key] = newValue;
+
+      return newdata;
+    },
+
+    changeState: function ($obj, newValue) {
+      var key = $obj.data('name');
+      var newData = sliders.get_newdata(sliders.sdata, key, newValue);
+      sliders.renderData(newData);
+      sliders.sdata = newData;
+    },
+
+    init: function () {
+      sliders.renderSliders(sliders.sdata);
+
+    }
+  };
+
+  $(document).ready(sliders.init);
+
+}());
 
 
 // Grouped Bar Charts 
@@ -124,7 +149,6 @@ sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
        // .attr("dy", ".71em")
        // .attr("text-anchor", "middle")
        // .text(function(d, i) { return i });
-
 
 //  $(function() {
 //   $( "#slider-macro" ).slider({
@@ -212,7 +236,7 @@ sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
 // var maxBarWidth = 420; // width of the bar with the max value
 
 // d3.csv('data/data.csv', function(data) {
-// // accessor functions 
+// // accessor functions
 // var barLabel = function(d) { return d['sector']; };
 // var barValue = function(d) { return parseFloat(d['value']); };
 
@@ -230,7 +254,7 @@ sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
 //   .attr('height', gridLabelHeight + gridChartOffset + data.length * barHeight);
 // // grid line labels
 // var gridContainer = chart.append('g')
-//   .attr('transform', 'translate(' + barLabelWidth + ',' + gridLabelHeight + ')'); 
+//   .attr('transform', 'translate(' + barLabelWidth + ',' + gridLabelHeight + ')');
 // gridContainer.selectAll("text").data(x.ticks(10)).enter().append("text")
 //   .attr("x", x)
 //   .attr("dy", -3)
@@ -245,7 +269,7 @@ sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
 //   .style("stroke", "#ccc");
 // // bar labels
 // var labelsContainer = chart.append('g')
-//   .attr('transform', 'translate(' + (barLabelWidth - barLabelPadding) + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
+//   .attr('transform', 'translate(' + (barLabelWidth - barLabelPadding) + ',' + (gridLabelHeight + gridChartOffset) + ')');
 // labelsContainer.selectAll('text').data(data).enter().append('text')
 //   .attr('y', yText)
 //   .attr('stroke', 'none')
@@ -255,7 +279,7 @@ sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
 //   .text(barLabel);
 // // bars
 // var barsContainer = chart.append('g')
-//   .attr('transform', 'translate(' + barLabelWidth + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
+//   .attr('transform', 'translate(' + barLabelWidth + ',' + (gridLabelHeight + gridChartOffset) + ')');
 // barsContainer.selectAll("rect").data(data).enter().append("rect")
 //   .attr('y', y)
 //   .attr('height', yScale.rangeBand())

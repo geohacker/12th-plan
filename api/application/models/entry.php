@@ -22,6 +22,13 @@ class Entry extends BaseModel
     );
 
     /**
+     * Do stuff before saving
+     */
+    protected function before_save() {
+        $this->data = json_encode($this->data);
+    }
+
+    /**
      * Relate to votes
      *
      * @var array

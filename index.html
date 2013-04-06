@@ -42,7 +42,7 @@
             <li><button class="btn btn-inverse" href="dislike">Dislike <i class="icon-thumbs-down icon-white"></i></button></li>
              <li class="divider-vertical"></li>
           <li><button class="btn btn-primary">Publish</button></li>
-            
+
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -66,36 +66,37 @@
     <div id="vis" class="row-fluid">
       <center>
       <div id="chart" class="span6 offset3">
-        <div class="row-fluid">
-          <div id="label-macro" class="span2"></div>
-          <div id="label-agriculture" class="span2"></div>
-          <div id="label-health" class="span2"></div>
-          <div id="label-water" class="span2"></div>
-          <div id="label-energy" class="span2"></div>
-          <div id="label-urban" class="span2"></div>
+
+        <div class="row-fluid slabels">
+          <div data-name="macro" class="slabel span2"></div>
+          <div data-name="agriculture" class="slabel span2"></div>
+          <div data-name="health" class="slabel span2"></div>
+          <div data-name="water" class="slabel span2"></div>
+          <div data-name="energy" class="slabel span2"></div>
+          <div data-name="urban" class="slabel span2"></div>
         </div>
-        <div class="row-fluid">
-          <div class="span2 sliders">
-            <div id="slider-macro"></div>
+        <div class="row-fluid main-sliders">
+          <div class="span2">
+            <div class="slider" data-name="macro"></div>
           </div>
           <div class="span2">
-            <div id="slider-agriculture"></div>
-          </div>
-
-          <div class="span2">
-            <div id="slider-health"></div>
+            <div class="slider" data-name="agriculture"></div>
           </div>
 
           <div class="span2">
-            <div id="slider-water"></div>
+            <div class="slider" data-name="health"></div>
           </div>
 
           <div class="span2">
-            <div id="slider-energy"></div>
+            <div class="slider" data-name="water"></div>
           </div>
 
           <div class="span2">
-            <div id="slider-urban"></div>
+            <div class="slider" data-name="energy"></div>
+          </div>
+
+          <div class="span2">
+            <div class="slider" data-name="urban"></div>
           </div>
         </div>
 
@@ -108,7 +109,13 @@
           <div class="span2">Urban Development</div>
         </div>
       </div>
-    </center>
+      </center>
+
+      <div id="controls" class="span4">
+        <div class="row-fluid">
+          <div id="slider_macro"></div>
+        </div>
+      </div>
     </div><!--/row-->
 
     <div class="row-fluid">
