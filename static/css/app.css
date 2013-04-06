@@ -71,3 +71,6 @@ svg {
   width: 100%;
   border-radius: 6px 6px 6px 6px;
 }
+#macro1 svg {
+  height: 350px;
+}

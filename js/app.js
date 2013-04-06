@@ -77,6 +77,9 @@
       var newData = sliders.get_newdata(sliders.sdata, key, newValue);
       sliders.renderData(newData);
       sliders.sdata = newData;
+      if (key=='agriculture') {
+        agriRedraw(newValue);
+      }
     },
 
     init: function () {
@@ -91,64 +94,95 @@
 
 
 // Grouped Bar Charts 
-
+samples = ["11th Plan", "12th Plan Proposed", "Your Allocation"];
 sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
 
- var n = 2, // number of samples
-      m = 3; // number of series
 
-      var w = 500,
-      h = 150,
-      x = d3.scale.linear().domain([0, 100]).range([0, h]),
-      y0 = d3.scale.ordinal().domain(d3.range(n)).rangeBands([0, w], .2),
-      y1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, y0.rangeBand()]),
-      colors = ["#9ECAE1", "#08306B", "#08306B"];
-      
-      var vis = d3.select("#macro")
-      .append("svg:svg")
-      .append("svg:g")
-      .attr("transform", "translate(10,10)");
+agri_sectors = [{name:"Department of Agriculture and Cooperation", code:'DAC', ratio:40.9793784889786},
+{name:"Department of Agricultural Research and Education", code:'DARC', ratio:14.6453994199842},
+{name:"Department of Animal Husbandry, Dairying, and Fisheries", code:'DADF', ratio:8.12652598035282},
+{name:"Rashtriya Krishi Vikas Yojana", code:'RKVJ', ratio:36.2486961106844}];
 
-        var g = vis.selectAll("g")
-        .data(sample_data)
-        .enter().append("svg:g")
-        .attr("fill", function(d, i) { return colors[i]; })
-        .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
+agriculture = [['38003','9989','4970','22426'],['71500','25553','14179','63246'],['71500','25553','14179','63246']];
+var agriVis;
+var n = 4, // number of samples
+m = 3; // number of series
+var w = 500,
+h = 300,
+x = d3.scale.linear().domain([0, 100000]).range([0, h]),
+y0 = d3.scale.ordinal().domain(d3.range(n)).rangeBands([0, w], .2),
+y1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, y0.rangeBand()]),
+colors = ["#a4d199", "#65b252", "#437936"];
 
-        var rect = g.selectAll("rect");
+function agriDraw() {
 
-        rect
-        .data(function(sample_data){return sample_data;})
-        .enter().append("svg:rect")
-        .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
-        .attr("width", y1.rangeBand())
-        .attr("height", x)
-        .attr("class", function(d, i) {return i;})
-        .transition()
-        .delay(50)
-        .attr("y", function(d) { return h - x(d); });
+  agriVis = d3.select("#macro1")
+  .append("svg:svg")
+  .append("svg:g")
+  .attr("transform", "translate(50,25)");
 
-       // rect.data(function(data){return data;})
-       // .enter()
-       // .append("text")
-       // .text(function(d) {return d;})
-       // .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
-       // .attr("x", y0.rangeBand() / 4)
-       //  .attr("y", h - 20)
-       //  .attr("dy", ".71em")
-       // .attr('text-anchor', 'middle')
-       // .attr("fill", "white");
+  var g = agriVis.selectAll("g")
+  .data(agriculture)
+  .enter().append("svg:g")
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("sample", function(d, i) {return samples[i]})
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
 
-       // var text = vis.selectAll("text")
-       // .data(d3.range(n))
-       // .enter().append("svg:text")
-       // .attr("class", "group")
-       // .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
-       // .attr("x", y0.rangeBand() / 2)
-       // .attr("y", h + 6)
-       // .attr("dy", ".71em")
-       // .attr("text-anchor", "middle")
-       // .text(function(d, i) { return i });
+  var rect = g.selectAll("rect");
+
+  rect
+  .data(function(agriculture){return agriculture;})
+  .enter().append("svg:rect")
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("width", y1.rangeBand())
+  .attr("height", x)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return h - x(d); });
+
+  agriVis.selectAll("rect").each(function(d,i) {$(this).tipsy({gravity: 's', title: function(){
+    div = d3.select(this);
+    parent_svgg = d3.select(div.node().parentNode);
+    return parent_svgg.attr('sample')+': '+String($(this).attr('value'));
+  }})});
+
+  var text = agriVis.selectAll("text")
+  .data(d3.range(n))
+  .enter().append("svg:text")
+  .attr("class", "group")
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("x", y0.rangeBand() / 2)
+  .attr("y", h+6)
+  .attr("dy", ".71em")
+  .attr("text-anchor", "middle")
+  .text(function(d, i) { return agri_sectors[i].code });
+}
+
+function agriRedraw(newValue) {
+  new_data = [];
+  for(var i=0; i<4; i++){
+    new_data.push(agri_sectors[i].ratio * newValue);
+  }
+
+  newAgridata = agriculture;
+  newAgridata.pop();
+  newAgridata.push(new_data);
+  var g = agriVis.selectAll("g");
+  g.data(newAgridata)
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });      
+
+  g.selectAll("rect")
+  .data(function(newAgridata){return newAgridata;})
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("width", y1.rangeBand())
+  .attr("height", x)
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return h - x(d); });
+}
+
 
 //  $(function() {
 //   $( "#slider-macro" ).slider({
