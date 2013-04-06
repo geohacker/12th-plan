@@ -1,5 +1,5 @@
-"12plan_all_sectors.csv"
-------------------------
+12plan_all_sectors.csv
+----------------------
 
 Sectoral allocation for all relevant sectors -- AgricultureRural (Agricultural and Rural Development), Health, WaterEnv (Water and Environment), Energy, EducationSkillDevt (Education and Skill Development), UrbanDevt (Urban Development).
 
