@@ -64,6 +64,68 @@ $( document ).ready(function() {
   init();
 });
 
+
+// Grouped Bar Charts 
+
+sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
+
+ var n = 2, // number of samples
+      m = 3; // number of series
+
+      var w = 500,
+      h = 150,
+      x = d3.scale.linear().domain([0, 100]).range([0, h]),
+      y0 = d3.scale.ordinal().domain(d3.range(n)).rangeBands([0, w], .2),
+      y1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, y0.rangeBand()]),
+      colors = ["#9ECAE1", "#08306B", "#08306B"];
+      
+      var vis = d3.select("#macro")
+      .append("svg:svg")
+      .append("svg:g")
+      .attr("transform", "translate(10,10)");
+
+        var g = vis.selectAll("g")
+        .data(sample_data)
+        .enter().append("svg:g")
+        .attr("fill", function(d, i) { return colors[i]; })
+        .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
+
+        var rect = g.selectAll("rect");
+
+        rect
+        .data(function(sample_data){return sample_data;})
+        .enter().append("svg:rect")
+        .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+        .attr("width", y1.rangeBand())
+        .attr("height", x)
+        .attr("class", function(d, i) {return i;})
+        .transition()
+        .delay(50)
+        .attr("y", function(d) { return h - x(d); });
+
+       // rect.data(function(data){return data;})
+       // .enter()
+       // .append("text")
+       // .text(function(d) {return d;})
+       // .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+       // .attr("x", y0.rangeBand() / 4)
+       //  .attr("y", h - 20)
+       //  .attr("dy", ".71em")
+       // .attr('text-anchor', 'middle')
+       // .attr("fill", "white");
+
+       // var text = vis.selectAll("text")
+       // .data(d3.range(n))
+       // .enter().append("svg:text")
+       // .attr("class", "group")
+       // .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+       // .attr("x", y0.rangeBand() / 2)
+       // .attr("y", h + 6)
+       // .attr("dy", ".71em")
+       // .attr("text-anchor", "middle")
+       // .text(function(d, i) { return i });
+
+
 //  $(function() {
 //   $( "#slider-macro" ).slider({
 //     orientation: "vertical",
