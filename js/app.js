@@ -1,3 +1,95 @@
+(function () {
+
+  var sliders = {
+    sdata: {
+      "macro"       : 15,
+      "agriculture" : 20,
+      "health"      : 10,
+      "water"       : 15,
+      "energy"      : 20,
+      "urban"       : 20
+    },
+
+    renderSliders: function (data) {
+      var x, selector;
+
+      for (x in data) {
+        if (data.hasOwnProperty(x)) {
+          $(".main-sliders .slider[data-name='" + x + "']").slider({
+            orientation : "vertical",
+            range       : "min",
+            min         : 0,
+            max         : 100,
+            value       : data[x],
+            slide      : function (e, ui) {
+              sliders.changeState($(e.target), ui.value);
+            }
+          });
+
+          $(".slabels .slabel[data-name='" + x + "']").html(data[x]);
+        }
+      }
+
+    },
+
+    renderData: function (data) {
+      var x, selector;
+
+      for (x in data) {
+        if (data.hasOwnProperty(x)) {
+          $(".main-sliders .slider[data-name='" + x + "']").slider("value", data[x]);
+
+          $(".slabels .slabel[data-name='" + x + "']").html(data[x]);
+        }
+      }
+    },
+
+    get_newdata: function (oldData, key, newValue) {
+      var ratios = {}, newdata = {}, x, total = 0, difference = 0, remaining = 0;
+
+      for (x in oldData) {
+        if (oldData.hasOwnProperty(x)) {
+          total = total + oldData[x];
+        }
+      }
+
+      difference = total - newValue;
+      remaining = total - oldData[key];
+
+      for (x in oldData) {
+        if (oldData.hasOwnProperty(x) && x != key) {
+          ratios[x] = remaining > 0 ? oldData[x] / remaining : 0;
+        }
+      }
+
+      for (x in oldData) {
+        if (oldData.hasOwnProperty(x) && x != key) {
+          newdata[x] = ratios[x] * difference;
+        }
+      }
+      newdata[key] = newValue;
+
+      return newdata;
+    },
+
+    changeState: function ($obj, newValue) {
+      var key = $obj.data('name');
+      var newData = sliders.get_newdata(sliders.sdata, key, newValue);
+      sliders.renderData(newData);
+      sliders.sdata = newData;
+    },
+
+    init: function () {
+      sliders.renderSliders(sliders.sdata);
+
+    }
+  };
+
+  $(document).ready(sliders.init);
+
+}());
+
+/*
 var state, difference;
 sliders = ['macro', 'agriculture', 'health', 'water', 'energy', 'urban'];
 sliderConfig = {orientation: "vertical",
@@ -7,7 +99,7 @@ sliderConfig = {orientation: "vertical",
     value: 50,
     slide: function(event,ui) {updateSliders(event, ui);},
     start: function(event, ui) {saveState(event, ui);}
-  }
+  };
 
 function saveState(event, ui) {
   state = 0;
@@ -26,6 +118,9 @@ function createSliders(slider) {
 function updateSliders(event, ui) {
   difference = 0;
   difference = ui.value - state;
+
+  console.log(ui.value + " | " + state + " | " + difference);
+
   sliders.forEach(changeState);
   slider = event.target.attributes['id'].nodeValue.split('-')[1];
   selector = "#label-"+slider;
@@ -37,6 +132,7 @@ function updateSliders(event, ui) {
     currentValue = $(selectortoChange).slider("value");
     change = currentValue+(difference/5);
     $(selectortoChange).slider("value", change);
+    console.log(selectortoChange + ": cval: " + currentValue + " | change: " + change);
     labelSelector = "#label-"+element;
     $(labelSelector).text(change);
   }
@@ -45,7 +141,7 @@ function updateSliders(event, ui) {
 $( document ).ready(function() {
   createSliders();
 });
-
+*/
 //  $(function() {
 //   $( "#slider-macro" ).slider({
 //     orientation: "vertical",
@@ -132,7 +228,7 @@ $( document ).ready(function() {
 // var maxBarWidth = 420; // width of the bar with the max value
 
 // d3.csv('data/data.csv', function(data) {
-// // accessor functions 
+// // accessor functions
 // var barLabel = function(d) { return d['sector']; };
 // var barValue = function(d) { return parseFloat(d['value']); };
 
@@ -150,7 +246,7 @@ $( document ).ready(function() {
 //   .attr('height', gridLabelHeight + gridChartOffset + data.length * barHeight);
 // // grid line labels
 // var gridContainer = chart.append('g')
-//   .attr('transform', 'translate(' + barLabelWidth + ',' + gridLabelHeight + ')'); 
+//   .attr('transform', 'translate(' + barLabelWidth + ',' + gridLabelHeight + ')');
 // gridContainer.selectAll("text").data(x.ticks(10)).enter().append("text")
 //   .attr("x", x)
 //   .attr("dy", -3)
@@ -165,7 +261,7 @@ $( document ).ready(function() {
 //   .style("stroke", "#ccc");
 // // bar labels
 // var labelsContainer = chart.append('g')
-//   .attr('transform', 'translate(' + (barLabelWidth - barLabelPadding) + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
+//   .attr('transform', 'translate(' + (barLabelWidth - barLabelPadding) + ',' + (gridLabelHeight + gridChartOffset) + ')');
 // labelsContainer.selectAll('text').data(data).enter().append('text')
 //   .attr('y', yText)
 //   .attr('stroke', 'none')
@@ -175,7 +271,7 @@ $( document ).ready(function() {
 //   .text(barLabel);
 // // bars
 // var barsContainer = chart.append('g')
-//   .attr('transform', 'translate(' + barLabelWidth + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
+//   .attr('transform', 'translate(' + barLabelWidth + ',' + (gridLabelHeight + gridChartOffset) + ')');
 // barsContainer.selectAll("rect").data(data).enter().append("rect")
 //   .attr('y', y)
 //   .attr('height', yScale.rangeBand())
