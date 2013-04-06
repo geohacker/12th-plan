@@ -1,7 +1,7 @@
 (function () {
 
   var sliders = {
-    sdata: {
+    original_data: {
       "macro"       : 15,
       "agriculture" : 20,
       "health"      : 10,
@@ -9,6 +9,8 @@
       "energy"      : 20,
       "urban"       : 20
     },
+
+    sdata: {},
 
     renderSliders: function (data) {
       var x, selector;
@@ -80,7 +82,13 @@
     },
 
     init: function () {
+      sliders.sdata = sliders.original_data;
       sliders.renderSliders(sliders.sdata);
+
+      // bind reset
+      $("#reset-main-graph").click(function () {
+        sliders.renderData(sliders.original_data);
+      });
 
     }
   };
@@ -90,7 +98,7 @@
 }());
 
 
-// Grouped Bar Charts 
+// Grouped Bar Charts
 
 sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
 
@@ -103,7 +111,7 @@ sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
       y0 = d3.scale.ordinal().domain(d3.range(n)).rangeBands([0, w], .2),
       y1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, y0.rangeBand()]),
       colors = ["#9ECAE1", "#08306B", "#08306B"];
-      
+
       var vis = d3.select("#macro")
       .append("svg:svg")
       .append("svg:g")
