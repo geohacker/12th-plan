@@ -145,6 +145,22 @@ $(document).ready(votes.init);
       if (key=='agriculture') {
         agriRedraw(newValue);
       }
+
+      if (key=='health') {
+        healthRedraw(newValue);
+      }
+
+      if (key=='water') {
+        waterRedraw(newValue);
+      }
+
+      if (key=='energy') {
+        energyRedraw(newValue);
+      }
+
+      if (key=='urban') {
+        urbanRedraw(newValue);
+      }
     },
 
     init: function () {
@@ -253,6 +269,11 @@ $(document).ready(votes.init);
 
 }());
 
+$(document).ready(agriDraw);
+$(document).ready(healthDraw);
+$(document).ready(waterDraw);
+$(document).ready(energyDraw);
+$(document).ready(urbanDraw);
 
 // Grouped Bar Charts
 samples = ["11th Plan", "12th Plan Proposed", "Your Allocation"];
@@ -265,7 +286,9 @@ agri_sectors = [{name:"Department of Agriculture and Cooperation", code:'DAC', r
 {name:"Rashtriya Krishi Vikas Yojana", code:'RKVJ', ratio:36.2486961106844}];
 
 agriculture = [['38003','9989','4970','22426'],['71500','25553','14179','63246'],['71500','25553','14179','63246']];
-var agriVis;
+water = [['37.28297632469','10.4509582863585','47.7339346110485','4.53213077790304'],['157338.634047351','44104.2980834273','201442.932130778','19126.1357384442'],['157338.634047351','44104.2980834273','201442.932130778','19126.1357384442']];
+
+var agriVis, healthVis, waterVis, energyVis;
 var n = 4, // number of samples
 m = 3; // number of series
 var w = 500,
@@ -277,7 +300,7 @@ colors = ["#a4d199", "#65b252", "#437936"];
 
 function agriDraw() {
 
-  agriVis = d3.select("#macro1")
+  agriVis = d3.select("#agriculture")
   .append("svg:svg")
   .append("svg:g")
   .attr("transform", "translate(50,25)");
@@ -329,6 +352,7 @@ function agriRedraw(newValue) {
   newAgridata = agriculture;
   newAgridata.pop();
   newAgridata.push(new_data);
+  console.log(new_data);
   var g = agriVis.selectAll("g");
   g.data(newAgridata)
   .attr("fill", function(d, i) { return colors[i]; })
@@ -339,161 +363,337 @@ function agriRedraw(newValue) {
   .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
   .attr("width", y1.rangeBand())
   .attr("height", x)
+  .attr("value", function(d, i) {return d;})
   .transition()
   .delay(50)
   .attr("y", function(d) { return h - x(d); });
+
 }
 
-//  $(function() {
-//   $( "#slider-macro" ).slider({
-//     orientation: "vertical",
-//     range: "min",
-//     min: 0,
-//     max: 100,
-//     value: 60,
-//     slide: function( event, ui ) {
-//       console.log(ui.value);
-//     }
-//   });
-// });
+healthSectors = [{name: 'Department of Health and Family Welfare', code: 'DHFW', ratio:89.5116293022419},
+                {name: 'AYUSH', code:'AYUSH', ratio:3.34779913205208},
+                {name: 'Department of Health Research', code:'DHR', ratio:3.34279943203408},
+                {name: 'AIDS Control', code: 'AC', ratio:3.79777213367198}];
+
+health = [['83407','2994','1870','1305'],['268551','10044','10029','11394'],['268551','10044','10029','11394']];
+
+function healthDraw() {
+
+  healthVis = d3.select("#health")
+  .append("svg:svg")
+  .append("svg:g")
+  .attr("transform", "translate(50,25)");
+
+  var g = healthVis.selectAll("g")
+  .data(health)
+  .enter().append("svg:g")
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("sample", function(d, i) {return samples[i]})
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
+
+  var rect = g.selectAll("rect");
+
+  rect
+  .data(function(health){return health;})
+  .enter().append("svg:rect")
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("width", y1.rangeBand())
+  .attr("height", x)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return h - x(d); });
+
+  healthVis.selectAll("rect").each(function(d,i) {$(this).tipsy({gravity: 's', title: function(){
+    div = d3.select(this);
+    parent_svgg = d3.select(div.node().parentNode);
+    return parent_svgg.attr('sample')+': '+String($(this).attr('value'));
+  }})});
+
+  var text = healthVis.selectAll("text")
+  .data(d3.range(n))
+  .enter().append("svg:text")
+  .attr("class", "group")
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("x", y0.rangeBand() / 2)
+  .attr("y", h+6)
+  .attr("dy", ".71em")
+  .attr("text-anchor", "middle")
+  .text(function(d, i) { return healthSectors[i].code });
+
+}
+
+function healthRedraw(newValue) {
+  new_data = [];
+  for(var i=0; i<4; i++){
+    new_data.push(healthSectors[i].ratio * newValue);
+  }
+
+  newHealthData = health;
+  newHealthData.pop();
+  newHealthData.push(new_data);
+  console.log(new_data);
+  var g = healthVis.selectAll("g");
+  g.data(newHealthData)
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
+
+  g.selectAll("rect")
+  .data(function(newHealthData){return newHealthData;})
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("width", y1.rangeBand())
+  .attr("height", x)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return h - x(d); });
+
+}
+
+waterSectors = [{name:'Major and Medium Irrigation',code:'MMI', ratio:37.28297632469},
+                {name:'MI and CAD', code:'MI & CAD', ratio:10.4509582863585},
+                {name:'Total Irrigation', code:'TI', ratio:47.7339346110485},
+                {name:'Flood Control', code:'FC', ratio:4.53213077790304}];
 
 
-// var margin = {top: 20, right: 20, bottom: 30, left: 60},
-//     width = 600 - margin.left - margin.right,
-//     height = 400 - margin.top - margin.bottom;
+function waterDraw() {
+  waterx = d3.scale.linear().domain([0, 300000]).range([0, h]),
 
-// var formatPercent = d3.format(".0%");
+  waterVis = d3.select("#water")
+  .append("svg:svg")
+  .append("svg:g")
+  .attr("transform", "translate(50,25)");
 
-// var x = d3.scale.ordinal()
-//     .rangeRoundBands([0, width], .1);
+  var g = waterVis.selectAll("g")
+  .data(water)
+  .enter().append("svg:g")
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("sample", function(d, i) {return samples[i]})
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
 
-// var y = d3.scale.linear()
-//     .range([height, 0]);
+  var rect = g.selectAll("rect");
 
-// var xAxis = d3.svg.axis()
-//     .scale(x)
-//     .orient("bottom");
+  rect
+  .data(function(water){return water;})
+  .enter().append("svg:rect")
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("width", y1.rangeBand())
+  .attr("height", waterx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return h - waterx(d); });
 
-// var yAxis = d3.svg.axis()
-//     .scale(y)
-//     .orient("left");
+  waterVis.selectAll("rect").each(function(d,i) {$(this).tipsy({gravity: 's', title: function(){
+    div = d3.select(this);
+    parent_svgg = d3.select(div.node().parentNode);
+    return parent_svgg.attr('sample')+': '+String($(this).attr('value'));
+  }})});
 
-// var svg = d3.select("#chart").append("svg")
-//     .attr("width", width + margin.left + margin.right)
-//     .attr("height", height + margin.top + margin.bottom)
-//   .append("g")
-//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  var text = waterVis.selectAll("text")
+  .data(d3.range(n))
+  .enter().append("svg:text")
+  .attr("class", "group")
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("x", y0.rangeBand() / 2)
+  .attr("y", h+6)
+  .attr("dy", ".71em")
+  .attr("text-anchor", "middle")
+  .text(function(d, i) { return waterSectors[i].code });
 
-// d3.csv("data/data.csv", function(data) {
+}
 
-//   data.forEach(function(d) {
-//     d.value = +d.value;
-//   });
+function waterRedraw(newValue) {
+  new_data = [];
+  for(var i=0; i<4; i++){
+    new_data.push(newValue * (waterSectors[i].ratio/100));
+  }
 
-//   x.domain(data.map(function(d) { return d.sector; }));
-//   y.domain([0, 100]);
+  newWaterData = water;
+  newWaterData.pop();
+  newWaterData.push(new_data);
+  console.log(new_data);
+  var g = waterVis.selectAll("g");
+  g.data(newWaterData)
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
 
-//   svg.append("g")
-//       .attr("class", "x axis")
-//       .attr("transform", "translate(0," + height + ")")
-//       .call(xAxis);
+  g.selectAll("rect")
+  .data(function(newWaterData){return newWaterData;})
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("width", y1.rangeBand())
+  .attr("height", x)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return h - x(d); });
 
-//   svg.append("g")
-//       .attr("class", "y axis")
-//       .call(yAxis)
-//     .append("text")
-//       .attr("transform", "rotate(-90)")
-//       .attr("y", 6)
-//       .attr("dy", ".71em")
-//       .style("text-anchor", "end")
-//       .text("Value %");
+}
 
-//   svg.selectAll(".bar")
-//       .data(data)
-//     .enter().append("rect")
-//       .attr("class", "bar")
-//       .attr("x", function(d) { return x(d.sector); })
-//       .attr("width", x.rangeBand())
-//       .attr("y", function(d) { return y(d.value); })
-//       .attr("height", function(d) { return height - y(d.value); });
+energy = [['30451.91','1500','197','4000','22980'],['54279','4617','5147','19113','41615'],['54279','4617','5147','19113','41615']];
+energySectors = [{name:'Ministry of Power', code:'MoP', ratio:43.502897307868},
+                {name:'Ministry of Coal', code:'MoC', ratio:3.70037909450113},
+                {name:'Ministry of Petroleum and Natural Gas', code:'MoPNG',ratio:4.12515728815189},
+                {name:'Ministry of Renewable Sources of Energy', code:'MoRSE', ratio:15.3184634249946},
+                {name:'Department of Atomic Energy', code:'DoAE', ratio:33.3531028844844}]
 
-// });
+var energyVis;
+var energyn = 5;// number of samples
+var energyh = 300,
+energyw =500,
+energyx = d3.scale.linear().domain([0, 55000]).range([0, energyh]),
+energyy0 = d3.scale.ordinal().domain(d3.range(energyn)).rangeBands([0, energyw], .2),
+energyy1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, energyy0.rangeBand()]);
+function energyDraw() {
+
+  energyVis = d3.select("#energy")
+  .append("svg:svg")
+  .append("svg:g")
+  .attr("transform", "translate(50,25)");
+
+  var g = energyVis.selectAll("g")
+  .data(energy)
+  .enter().append("svg:g")
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("sample", function(d, i) {return samples[i]})
+  .attr("transform", function(d, i) { return "translate(" + energyy1(i) + ",0)"; });
+
+  var rect = g.selectAll("rect");
+
+  rect
+  .data(function(energy){return energy;})
+  .enter().append("svg:rect")
+  .attr("transform", function(d, i) { return "translate(" + energyy0(i) + ",0)"; })
+  .attr("width", energyy1.rangeBand())
+  .attr("height", energyx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return energyh - energyx(d); });
+
+  energyVis.selectAll("rect").each(function(d,i) {$(this).tipsy({gravity: 's', title: function(){
+    div = d3.select(this);
+    parent_svgg = d3.select(div.node().parentNode);
+    return parent_svgg.attr('sample')+': '+String($(this).attr('value'));
+  }})});
+
+  var text = energyVis.selectAll("text")
+  .data(d3.range(energyn))
+  .enter().append("svg:text")
+  .attr("class", "group")
+  .attr("transform", function(d, i) { return "translate(" + energyy0(i) + ",0)"; })
+  .attr("x", energyy0.rangeBand() / 2)
+  .attr("y", energyh+6)
+  .attr("dy", ".71em")
+  .attr("text-anchor", "middle")
+  .text(function(d, i) { return energySectors[i].code });
+
+}
+
+function energyRedraw(newValue) {
+  new_data = [];
+  for(var i=0; i<4; i++){
+    new_data.push(energy[2][i]+newValue * (energySectors[i].ratio/100));
+  }
+
+  newenergyData = energy;
+  newenergyData.pop();
+  newenergyData.push(new_data);
+  console.log(new_data);
+  var g = energyVis.selectAll("g");
+  g.data(newenergyData)
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("transform", function(d, i) { return "translate(" + energyy1(i) + ",0)"; });
+
+  g.selectAll("rect")
+  .data(function(newenergyData){return newenergyData;})
+  .attr("transform", function(d, i) { return "translate(" + energyy0(i) + ",0)"; })
+  .attr("width", energyy1.rangeBand())
+  .attr("height", energyx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return energyh - energyx(d); });
+
+}
+var urbanVis;
+urban = [['43132.5','23185','12210','3687'],['66246','35671','54311','7850'],['66246','35671','54311','7850']];
+urbanSectors = [{name:'Ministry of Urban Development - JNNURM Funds', code: 'MoUD JNNURM', ratio:40.374699837882},
+              {name:'Ministry of Housing and Urban Poverty Alleviation - JNNURM Funds', code:'MoHUPA JNNURM', ratio:21.7402698716464},
+              {name:'Ministry of Urban Development - Other Funds',code:'MoUD Others', ratio:33.1007203890832},
+              {name:'Ministry of Housing and Urban Poverty Alleviation - Other Funds', code:'MoHUPA Others', ratio:4.78430990138836}];
 
 
+function urbanDraw() {
+  urbanx = d3.scale.linear().domain([0, 80000]).range([0, h]),
 
-// var valueLabelWidth = 40; // space reserved for value labels (right)
-// var barHeight = 40; // height of one bar
-// var barLabelWidth = 100; // space reserved for bar labels
-// var barLabelPadding = 5; // padding between bar and bar labels (left)
-// var gridLabelHeight = 25; // space reserved for gridline labels
-// var gridChartOffset = 3; // space between start of grid and first bar
-// var maxBarWidth = 420; // width of the bar with the max value
+  urbanVis = d3.select("#urban")
+  .append("svg:svg")
+  .append("svg:g")
+  .attr("transform", "translate(50,25)");
 
-// d3.csv('data/data.csv', function(data) {
-// // accessor functions
-// var barLabel = function(d) { return d['sector']; };
-// var barValue = function(d) { return parseFloat(d['value']); };
+  var g = urbanVis.selectAll("g")
+  .data(urban)
+  .enter().append("svg:g")
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("sample", function(d, i) {return samples[i]})
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
 
-// // scales
-// var yScale = d3.scale.ordinal().domain(d3.range(0, data.length)).rangeBands([0, data.length * barHeight]);
-// var y = function(d, i) { return yScale(i); };
-// var yText = function(d, i) { return y(d, i) + yScale.rangeBand() / 2; };
-// var x = d3.scale.linear().domain([0, 100]).range([0, maxBarWidth]);
+  var rect = g.selectAll("rect");
 
-// // svg container element
+  rect
+  .data(function(urban){return urban;})
+  .enter().append("svg:rect")
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("width", y1.rangeBand())
+  .attr("height", urbanx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return h - urbanx(d); });
 
+  urbanVis.selectAll("rect").each(function(d,i) {$(this).tipsy({gravity: 's', title: function(){
+    div = d3.select(this);
+    parent_svgg = d3.select(div.node().parentNode);
+    return parent_svgg.attr('sample')+': '+String($(this).attr('value'));
+  }})});
 
-// var chart = d3.select('#chart').append("svg")
-//   .attr('width', maxBarWidth + barLabelWidth + valueLabelWidth)
-//   .attr('height', gridLabelHeight + gridChartOffset + data.length * barHeight);
-// // grid line labels
-// var gridContainer = chart.append('g')
-//   .attr('transform', 'translate(' + barLabelWidth + ',' + gridLabelHeight + ')');
-// gridContainer.selectAll("text").data(x.ticks(10)).enter().append("text")
-//   .attr("x", x)
-//   .attr("dy", -3)
-//   .attr("text-anchor", "middle")
-//   .text(String);
-// // vertical grid lines
-// gridContainer.selectAll("line").data(x.ticks(10)).enter().append("line")
-//   .attr("x1", x)
-//   .attr("x2", x)
-//   .attr("y1", 0)
-//   .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
-//   .style("stroke", "#ccc");
-// // bar labels
-// var labelsContainer = chart.append('g')
-//   .attr('transform', 'translate(' + (barLabelWidth - barLabelPadding) + ',' + (gridLabelHeight + gridChartOffset) + ')');
-// labelsContainer.selectAll('text').data(data).enter().append('text')
-//   .attr('y', yText)
-//   .attr('stroke', 'none')
-//   .attr('fill', 'black')
-//   .attr("dy", ".35em") // vertical-align: middle
-//   .attr('text-anchor', 'end')
-//   .text(barLabel);
-// // bars
-// var barsContainer = chart.append('g')
-//   .attr('transform', 'translate(' + barLabelWidth + ',' + (gridLabelHeight + gridChartOffset) + ')');
-// barsContainer.selectAll("rect").data(data).enter().append("rect")
-//   .attr('y', y)
-//   .attr('height', yScale.rangeBand())
-//   .attr('width', function(d) { return x(barValue(d)); })
-//   .attr('stroke', 'white')
-//   .attr('fill', 'steelblue');
-// // bar value labels
-// barsContainer.selectAll("text").data(data).enter().append("text")
-//   .attr("x", function(d) { return x(barValue(d)); })
-//   .attr("y", yText)
-//   .attr("dx", 3) // padding-left
-//   .attr("dy", ".35em") // vertical-align: middle
-//   .attr("text-anchor", "start") // text-align: right
-//   .attr("fill", "black")
-//   .attr("stroke", "none")
-//   .text(function(d) { return d3.round(barValue(d), 2); });
-// // start line
-// barsContainer.append("line")
-//   .attr("y1", -gridChartOffset)
-//   .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
-//   .style("stroke", "#000");
-// });
+  var text = urbanVis.selectAll("text")
+  .data(d3.range(n))
+  .enter().append("svg:text")
+  .attr("class", "group")
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("x", y0.rangeBand() / 2)
+  .attr("y", h+6)
+  .attr("dy", ".71em")
+  .attr("text-anchor", "middle")
+  .text(function(d, i) { return urbanSectors[i].code });
 
+}
+
+function urbanRedraw(newValue) {
+  new_data = [];
+  for(var i=0; i<4; i++){
+    new_data.push(newValue * (urbanSectors[i].ratio/100));
+  }
+
+  newurbanData = urban;
+  newurbanData.pop();
+  newurbanData.push(new_data);
+  console.log(new_data);
+  var g = urbanVis.selectAll("g");
+  g.data(newurbanData)
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
+
+  g.selectAll("rect")
+  .data(function(newurbanData){return newurbanData;})
+  .attr("transform", function(d, i) { return "translate(" + y0(i) + ",0)"; })
+  .attr("width", y1.rangeBand())
+  .attr("height", x)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return h - x(d); });
+
+}            

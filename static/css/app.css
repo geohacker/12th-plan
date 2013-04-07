@@ -71,6 +71,6 @@ svg {
   width: 100%;
   border-radius: 6px 6px 6px 6px;
 }
-#macro1 svg {
+#agriculture svg, #health svg, #water svg, #energy svg, #urban svg {
   height: 350px;
 }
