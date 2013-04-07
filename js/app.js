@@ -9,14 +9,14 @@ getURLHashParameter = function(name) {
 };
 
 function redrawAllDependentGraphs(mainData)
-{ 
+{
   console.log(mainData);
   agriRedraw(mainData.agriculture);
   healthRedraw(mainData.health);
   waterRedraw(mainData.water);
   energyRedraw(mainData.energy);
   urbanRedraw(mainData.urban);
-  
+
 }
 
 var votes = {
@@ -214,6 +214,10 @@ $(document).ready(votes.init);
                     sliders.sdata = ndata;
 
                     sliders.renderData(ndata);
+
+                    $("userdata .name").html(entry.name + " [" + entry.email + "] ");
+                    $("userdata .time").html(entry.created_at);
+                    $("userdata .description").html(entry.description);
                 },
                 404: function() {
                     // entry not found
@@ -222,6 +226,8 @@ $(document).ready(votes.init);
         });
 
         votes.load_votes(entry_id);
+      } else {
+        $(".userdata").hide();
       }
 
     }
