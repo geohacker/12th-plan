@@ -8,6 +8,16 @@ getURLHashParameter = function(name) {
     );
 };
 
+function redrawAllDependentGraphs(mainData)
+{
+  agriRedraw(mainData.agriculture);
+  (mainData.agriculture);
+  healthRedraw(mainData.health);
+  waterRedraw(mainData.water);
+  energyRedraw(mainData.energy);
+  urbanRedraw(mainData.urban);
+}
+
 var votes = {
   renderVotes: function (likes, dislikes) {
     $(".vote-button[data-value='1'] .count").html(likes);
@@ -107,6 +117,8 @@ $(document).ready(votes.init);
           $(".slabels .slabel[data-name='" + x + "']").html(Math.floor(data[x]));
         }
       }
+
+      redrawAllDependentGraphs(data);
     },
 
     get_newdata: function (oldData, key, newValue) {
@@ -142,6 +154,7 @@ $(document).ready(votes.init);
       var newData = sliders.get_newdata(sliders.sdata, key, newValue);
       sliders.renderData(newData);
       sliders.sdata = newData;
+      /*
       if (key=='agriculture') {
         agriRedraw(newValue);
       }
@@ -160,7 +173,7 @@ $(document).ready(votes.init);
 
       if (key=='urban') {
         urbanRedraw(newValue);
-      }
+      }*/
     },
 
     init: function () {
@@ -696,4 +709,4 @@ function urbanRedraw(newValue) {
   .delay(50)
   .attr("y", function(d) { return h - x(d); });
 
-}            
+}
