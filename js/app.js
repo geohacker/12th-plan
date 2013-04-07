@@ -300,7 +300,7 @@ colors = ["#a4d199", "#65b252", "#437936"];
 
 function agriDraw() {
 
-  agriVis = d3.select("#agriculture")
+  agriVis = d3.select("#agriculture_chart")
   .append("svg:svg")
   .append("svg:g")
   .attr("transform", "translate(50,25)");
@@ -379,7 +379,7 @@ health = [['83407','2994','1870','1305'],['268551','10044','10029','11394'],['26
 
 function healthDraw() {
 
-  healthVis = d3.select("#health")
+  healthVis = d3.select("#health_chart")
   .append("svg:svg")
   .append("svg:g")
   .attr("transform", "translate(50,25)");
@@ -459,7 +459,7 @@ waterSectors = [{name:'Major and Medium Irrigation',code:'MMI', ratio:37.2829763
 function waterDraw() {
   waterx = d3.scale.linear().domain([0, 300000]).range([0, h]),
 
-  waterVis = d3.select("#water")
+  waterVis = d3.select("#water_chart")
   .append("svg:svg")
   .append("svg:g")
   .attr("transform", "translate(50,25)");
