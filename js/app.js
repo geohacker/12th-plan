@@ -16,6 +16,7 @@ function redrawAllDependentGraphs(mainData)
   waterRedraw(mainData.water);
   energyRedraw(mainData.energy);
   urbanRedraw(mainData.urban);
+  
 }
 
 var votes = {
@@ -101,7 +102,7 @@ $(document).ready(votes.init);
             }
           });
 
-          $(".slabels .slabel[data-name='" + x + "']").html(Math.floor(data[x]));
+          $(".slabels .slabel[data-name='" + x + "']").html('&#8377;'+Math.floor(data[x]*total));
         }
       }
 
@@ -114,7 +115,7 @@ $(document).ready(votes.init);
         if (data.hasOwnProperty(x)) {
           $(".main-sliders .slider[data-name='" + x + "']").slider("value", data[x]);
 
-          $(".slabels .slabel[data-name='" + x + "']").html(Math.floor(data[x]));
+          $(".slabels .slabel[data-name='" + x + "']").html('&#8377;'+Math.floor(data[x]*total));
         }
       }
       redrawAllDependentGraphs(data);
@@ -286,6 +287,9 @@ $(document).ready(healthDraw);
 $(document).ready(waterDraw);
 $(document).ready(energyDraw);
 $(document).ready(urbanDraw);
+$(document).ready(ruralDraw);
+$(document).ready(environmentDraw);
+$(document).ready(educationDraw);
 
 // Grouped Bar Charts
 samples = ["11th Plan", "12th Plan Proposed", "Your Allocation"];
@@ -708,5 +712,266 @@ function urbanRedraw(newValue) {
   .transition()
   .delay(50)
   .attr("y", function(d) { return h - x(d); });
+
+}
+
+
+rural = [['100000','26882.21','43251.07','20691.77','1397'],['165500','59585','124013','29006','65157'],['165500','59585','124013','29006','65157']];
+ruralSectors = [{name: 'Mahatma Gandhi National Rural Employment Guarantee Act',code:'MHNREGA', ratio:37.3369188807497},
+                {name: 'Indira Awas Yojana', code:'IWY', ratio:13.4424188006615},
+                {name: "Prime Minister's Gram Sadak Yojana", code: 'PMGSY', ratio:27.9774218801113},
+                {name: 'National Rural Livelihood Mission', code:'NRLM', ratio:6.5437744353778},
+                {name: 'Other', code:'Other', ratio:14.6994660030998}];
+
+var ruralVis;
+var ruraln = 5;// number of samples
+var ruralh = 300,
+ruralw =500,
+ruralx = d3.scale.linear().domain([0, 200000]).range([0, ruralh]),
+ruraly0 = d3.scale.ordinal().domain(d3.range(ruraln)).rangeBands([0, ruralw], .2),
+ruraly1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, ruraly0.rangeBand()]);
+function ruralDraw() {
+
+  ruralVis = d3.select("#rural_chart")
+  .append("svg:svg")
+  .append("svg:g")
+  .attr("transform", "translate(50,25)");
+
+  var g = ruralVis.selectAll("g")
+  .data(rural)
+  .enter().append("svg:g")
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("sample", function(d, i) {return samples[i]})
+  .attr("transform", function(d, i) { return "translate(" + ruraly1(i) + ",0)"; });
+
+  var rect = g.selectAll("rect");
+
+  rect
+  .data(function(rural){return rural;})
+  .enter().append("svg:rect")
+  .attr("transform", function(d, i) { return "translate(" + ruraly0(i) + ",0)"; })
+  .attr("width", ruraly1.rangeBand())
+  .attr("height", ruralx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return ruralh - ruralx(d); });
+
+  ruralVis.selectAll("rect").each(function(d,i) {$(this).tipsy({gravity: 's', title: function(){
+    div = d3.select(this);
+    parent_svgg = d3.select(div.node().parentNode);
+    return parent_svgg.attr('sample')+': '+String($(this).attr('value'));
+  }})});
+
+  var text = ruralVis.selectAll("text")
+  .data(d3.range(ruraln))
+  .enter().append("svg:text")
+  .attr("class", "group")
+  .attr("transform", function(d, i) { return "translate(" + ruraly0(i) + ",0)"; })
+  .attr("x", ruraly0.rangeBand() / 2)
+  .attr("y", ruralh+6)
+  .attr("dy", ".71em")
+  .attr("text-anchor", "middle")
+  .text(function(d, i) { return ruralSectors[i].code });
+
+}
+
+function ruralRedraw(newValue) {
+  new_data = [];
+  for(var i=0; i<ruralSectors.length; i++){
+    new_data.push(newValue * total * (ruralSectors[i].ratio/100));
+  }
+
+  newruralData = rural;
+  newruralData.pop();
+  newruralData.push(new_data);
+  console.log(new_data);
+  var g = ruralVis.selectAll("g");
+  g.data(newruralData)
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("transform", function(d, i) { return "translate(" + ruraly1(i) + ",0)"; });
+
+  g.selectAll("rect")
+  .data(function(newruralData){return newruralData;})
+  .attr("transform", function(d, i) { return "translate(" + ruraly0(i) + ",0)"; })
+  .attr("width", ruraly1.rangeBand())
+  .attr("height", ruralx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return ruralh - ruralx(d); });
+
+}
+
+environment = [[119,1826.47,2611.44,2760.75,1913.34],[230.742173112339,3541.54333549995,5063.6079038024,5353.12146571336,3709.98512187195],[230.742173112339,3541.54333549995,5063.6079038024,5353.12146571336,3709.98512187195]];
+environmentSectors = [{name: 'Animal Welfare', code:'AW', ratio:1.28913443830571},
+                      {name: 'National Afforestation and Eco Development Board', code: 'NAEDB', ratio:19.7862636767414},
+                      {name: 'Forests and Wildlife', code: 'F & W', ratio:28.2898927526812},
+                      {name: 'National River Conservation Plan', code:'NRCP', ratio:29.9073773155671},
+                      {name: 'Environment', code:'Environment', ratio:20.7273318167046}];
+var environmentVis;
+var environmentn = 5;// number of samples
+var environmenth = 300,
+environmentw =500,
+environmentx = d3.scale.linear().domain([0, 7000]).range([0, environmenth]),
+environmenty0 = d3.scale.ordinal().domain(d3.range(environmentn)).rangeBands([0, environmentw], .2),
+environmenty1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, environmenty0.rangeBand()]);
+function environmentDraw() {
+
+  environmentVis = d3.select("#environment_chart")
+  .append("svg:svg")
+  .append("svg:g")
+  .attr("transform", "translate(50,25)");
+
+  var g = environmentVis.selectAll("g")
+  .data(environment)
+  .enter().append("svg:g")
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("sample", function(d, i) {return samples[i]})
+  .attr("transform", function(d, i) { return "translate(" + environmenty1(i) + ",0)"; });
+
+  var rect = g.selectAll("rect");
+
+  rect
+  .data(function(environment){return environment;})
+  .enter().append("svg:rect")
+  .attr("transform", function(d, i) { return "translate(" + environmenty0(i) + ",0)"; })
+  .attr("width", environmenty1.rangeBand())
+  .attr("height", environmentx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return environmenth - environmentx(d); });
+
+  environmentVis.selectAll("rect").each(function(d,i) {$(this).tipsy({gravity: 's', title: function(){
+    div = d3.select(this);
+    parent_svgg = d3.select(div.node().parentNode);
+    return parent_svgg.attr('sample')+': '+String($(this).attr('value'));
+  }})});
+
+  var text = environmentVis.selectAll("text")
+  .data(d3.range(environmentn))
+  .enter().append("svg:text")
+  .attr("class", "group")
+  .attr("transform", function(d, i) { return "translate(" + environmenty0(i) + ",0)"; })
+  .attr("x", environmenty0.rangeBand() / 2)
+  .attr("y", environmenth+6)
+  .attr("dy", ".71em")
+  .attr("text-anchor", "middle")
+  .text(function(d, i) { return environmentSectors[i].code });
+
+}
+
+function environmentRedraw(newValue) {
+  new_data = [];
+  for(var i=0; i<environmentSectors.length; i++){
+    new_data.push(newValue * total * (environmentSectors[i].ratio/100));
+  }
+
+  newenvironmentData = environment;
+  newenvironmentData.pop();
+  newenvironmentData.push(new_data);
+  console.log(new_data);
+  var g = environmentVis.selectAll("g");
+  g.data(newenvironmentData)
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("transform", function(d, i) { return "translate(" + environmenty1(i) + ",0)"; });
+
+  g.selectAll("rect")
+  .data(function(newenvironmentData){return newenvironmentData;})
+  .attr("transform", function(d, i) { return "translate(" + environmenty0(i) + ",0)"; })
+  .attr("width", environmenty1.rangeBand())
+  .attr("height", environmentx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return environmenth - environmentx(d); });
+
+}
+
+education = [[71000,55390,48000,84942.79,2499.6],[192726,60147,90155,110700,13223],[192726,60147,90155,110700,13223]];
+educationSectors = [{name:'Sarva Siksha Abhiyan', code:'SSA', ratio:41.2732813507199},
+                    {name:'Senior and Secondary Education', code:'SSE', ratio:12.8807947728991},
+                    {name:'Mid-Day Meal Scheme', code:'MMS', ratio:'19.3071649916158'},
+                    {name:'Department of Higher Education', code:'DHE', ratio:23.7069842445995},
+                    {name:'Ministry of Labour and Employment',code:'MLE', ratio:2.83177464016567}];
+
+var educationVis;
+var educationn = 5;// number of samples
+var educationh = 300,
+educationw =500,
+educationx = d3.scale.linear().domain([0, 200000]).range([0, educationh]),
+educationy0 = d3.scale.ordinal().domain(d3.range(educationn)).rangeBands([0, educationw], .2),
+educationy1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, educationy0.rangeBand()]);
+function educationDraw() {
+
+  educationVis = d3.select("#education_chart")
+  .append("svg:svg")
+  .append("svg:g")
+  .attr("transform", "translate(50,25)");
+
+  var g = educationVis.selectAll("g")
+  .data(education)
+  .enter().append("svg:g")
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("sample", function(d, i) {return samples[i]})
+  .attr("transform", function(d, i) { return "translate(" + educationy1(i) + ",0)"; });
+
+  var rect = g.selectAll("rect");
+
+  rect
+  .data(function(education){return education;})
+  .enter().append("svg:rect")
+  .attr("transform", function(d, i) { return "translate(" + educationy0(i) + ",0)"; })
+  .attr("width", educationy1.rangeBand())
+  .attr("height", educationx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return educationh - educationx(d); });
+
+  educationVis.selectAll("rect").each(function(d,i) {$(this).tipsy({gravity: 's', title: function(){
+    div = d3.select(this);
+    parent_svgg = d3.select(div.node().parentNode);
+    return parent_svgg.attr('sample')+': '+String($(this).attr('value'));
+  }})});
+
+  var text = educationVis.selectAll("text")
+  .data(d3.range(educationn))
+  .enter().append("svg:text")
+  .attr("class", "group")
+  .attr("transform", function(d, i) { return "translate(" + educationy0(i) + ",0)"; })
+  .attr("x", educationy0.rangeBand() / 2)
+  .attr("y", educationh+6)
+  .attr("dy", ".71em")
+  .attr("text-anchor", "middle")
+  .text(function(d, i) { return educationSectors[i].code });
+
+}
+
+function educationRedraw(newValue) {
+  new_data = [];
+  for(var i=0; i<educationSectors.length; i++){
+    new_data.push(newValue * total * (educationSectors[i].ratio/100));
+  }
+
+  neweducationData = education;
+  neweducationData.pop();
+  neweducationData.push(new_data);
+  console.log(new_data);
+  var g = educationVis.selectAll("g");
+  g.data(neweducationData)
+  .attr("fill", function(d, i) { return colors[i]; })
+  .attr("transform", function(d, i) { return "translate(" + educationy1(i) + ",0)"; });
+
+  g.selectAll("rect")
+  .data(function(neweducationData){return neweducationData;})
+  .attr("transform", function(d, i) { return "translate(" + educationy0(i) + ",0)"; })
+  .attr("width", educationy1.rangeBand())
+  .attr("height", educationx)
+  .attr("value", function(d, i) {return d;})
+  .transition()
+  .delay(50)
+  .attr("y", function(d) { return educationh - educationx(d); });
 
 }

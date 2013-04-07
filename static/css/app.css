@@ -72,7 +72,7 @@ svg {
   width: 100%;
   border-radius: 6px 6px 6px 6px;
 }
-#agriculture_chart svg, #health svg, #water svg, #energy svg, #urban svg {
+#agriculture_chart svg, #health svg, #water svg, #energy svg, #urban svg, #rural svg, #environment svg, #education svg {
   height: 350px;
 }
 
