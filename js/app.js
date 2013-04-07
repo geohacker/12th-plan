@@ -546,7 +546,7 @@ energyy0 = d3.scale.ordinal().domain(d3.range(energyn)).rangeBands([0, energyw],
 energyy1 = d3.scale.ordinal().domain(d3.range(m)).rangeBands([0, energyy0.rangeBand()]);
 function energyDraw() {
 
-  energyVis = d3.select("#energy")
+  energyVis = d3.select("#energy_chart")
   .append("svg:svg")
   .append("svg:g")
   .attr("transform", "translate(50,25)");
@@ -627,7 +627,7 @@ urbanSectors = [{name:'Ministry of Urban Development - JNNURM Funds', code: 'MoU
 function urbanDraw() {
   urbanx = d3.scale.linear().domain([0, 80000]).range([0, h]),
 
-  urbanVis = d3.select("#urban")
+  urbanVis = d3.select("#urban_chart")
   .append("svg:svg")
   .append("svg:g")
   .attr("transform", "translate(50,25)");
