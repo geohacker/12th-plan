@@ -215,9 +215,9 @@ $(document).ready(votes.init);
 
                     sliders.renderData(ndata);
 
-                    $("userdata .name").html(entry.name + " [" + entry.email + "] ");
-                    $("userdata .time").html(entry.created_at);
-                    $("userdata .description").html(entry.description);
+                    $(".userdata .name").html(entry.name + " [" + entry.email + "] ");
+                    $(".userdata .time").html(entry.created_at);
+                    $(".userdata .description").html(entry.description);
                 },
                 404: function() {
                     // entry not found
