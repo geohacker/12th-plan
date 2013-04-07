@@ -1,3 +1,66 @@
+
+
+var API_BASE_URL = "http://localhost/12th-plan/api/public/";
+
+getURLHashParameter = function(name) {
+
+    return decodeURI((RegExp('[#|&]' + name + '=' + '(.+?)(&|$)').exec(location.hash)||[null])[1]
+    );
+};
+
+var votes = {
+  renderVotes: function (likes, dislikes) {
+    $(".vote-button[data-value='1'] .count").html(likes);
+    $(".vote-button[data-value='0'] .count").html(dislikes);
+  },
+
+  load_votes: function (entry_id) {
+    $.ajax({
+        type : "GET",
+        url  : API_BASE_URL + "votes/get/" + entry_id,
+        dataType   : "json",
+        statusCode : {
+            200: function(data) {
+              votes.renderVotes(data.likes, data.dislikes);
+            },
+            404: function() {
+
+            }
+        }
+    });
+  },
+
+  init: function () {
+    $(".vote-button").click(function () {
+      var entry_id = getURLHashParameter("id");
+      var $that = $(this);
+
+      if (entry_id != "undefined") {
+        $.ajax({
+            type : "POST",
+            url  : API_BASE_URL + "votes/vote",
+            data : {
+                email    : $("input.vote-email").val(),
+                entry_id : entry_id,
+                like     : $that.data('value')
+            },
+            dataType   : "json",
+            statusCode : {
+                201: function(data) {
+                  votes.renderVotes(data.likes, data.dislikes);
+                },
+                400: function(data) {
+                    alert("Please provide email. You can only vote once!");
+                }
+            }
+        });
+      }
+    });
+  }
+};
+
+$(document).ready(votes.init);
+
 (function () {
 
   var sliders = {
@@ -91,7 +154,46 @@
       // bind reset
       $("#reset-main-graph").click(function () {
         sliders.renderData(sliders.original_data);
+        sliders.sdata = sliders.original_data;
       });
+
+      window.get_slider_data_for_publishing = function () {
+        return sliders.sdata;
+      };
+
+
+      // if id given load data
+      var entry_id = getURLHashParameter('id');
+
+      if (entry_id != "undefined") {
+        $.ajax({
+            type       : "GET",
+            url        : API_BASE_URL + "entries/get/" + entry_id,
+            dataType   : "json",
+            statusCode : {
+                200: function(entry) {
+                    var ndata = eval("(" + entry.data + ")");
+
+                    var x;
+
+                    for (x in ndata) {
+                      if (ndata.hasOwnProperty(x)) {
+                        ndata[x] = parseFloat(ndata[x]);
+                      }
+                    }
+
+                    sliders.sdata = ndata;
+
+                    sliders.renderData(ndata);
+                },
+                404: function() {
+                    // entry not found
+                }
+            }
+        });
+
+        votes.load_votes(entry_id);
+      }
 
     }
   };
@@ -101,7 +203,58 @@
 }());
 
 
-// Grouped Bar Charts 
+(function () {
+
+  var _abc = {
+    submit: function () {
+      $.ajax({
+          type : "POST",
+          url  : API_BASE_URL + "entries/add",
+          data : {
+              email       : $(".publish-form form input[name='email']").val(),
+              name        : $(".publish-form form input[name='name']").val(),
+              description : $(".publish-form form textarea[name='description']").val(),
+              data        : get_slider_data_for_publishing()
+          },
+          dataType   : "json",
+          statusCode : {
+              201: function(data) {
+                  var entry_id = data.id;
+
+                  window.location = window.location.pathname + "#id=" + entry_id;
+
+                  $(".publish-form").modal("hide");
+              },
+              400: function(data) {
+                  // some validation error
+                  // data is an array of error messages
+                  alert("Please enter all required fields");
+              }
+          }
+      });
+    },
+
+    init: function () {
+      $(".publish-form").modal({
+        show: false
+      });
+
+      $(".publish-button").click(function () {
+        $(".publish-form").modal("show");
+      });
+
+      $(".publish-form form").submit(function () {
+        _abc.submit();
+      });
+    }
+  };
+
+  $(document).ready(_abc.init);
+
+}());
+
+
+// Grouped Bar Charts
 samples = ["11th Plan", "12th Plan Proposed", "Your Allocation"];
 sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
 
@@ -179,7 +332,7 @@ function agriRedraw(newValue) {
   var g = agriVis.selectAll("g");
   g.data(newAgridata)
   .attr("fill", function(d, i) { return colors[i]; })
-  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });      
+  .attr("transform", function(d, i) { return "translate(" + y1(i) + ",0)"; });
 
   g.selectAll("rect")
   .data(function(newAgridata){return newAgridata;})

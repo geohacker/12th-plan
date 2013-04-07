@@ -19,6 +19,33 @@
 
 <body>
 
+  <div class="modal hide fade publish-form">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Publish</h3>
+    </div>
+
+    <form onsubmit="return false">
+      <div class="modal-body">
+        <label>Description
+          <textarea name="description"></textarea>
+        </label>
+
+        <label>Email
+            <input type="text" name="email" />
+        </label>
+
+        <label>Name <small>optional</small>
+          <input type="text" name="name"/>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Publish</button>
+      </div>
+    </form>
+  </div>
+
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid">
@@ -39,11 +66,13 @@
             <li><a href="#education">Urban Development</a></li>
           </ul>
           <ul class="nav pull-right">
-            <li><button class="btn btn-success" href="like">Like <i class="icon-thumbs-up icon-white"></i></button></li>
+            <li>
+            <input type="text" class="vote-email" placeholder="email"/></li>
+            <li><button class="btn btn-success vote-button" data-value="1" href="like">Like <i class="icon-thumbs-up icon-white" ></i> (<span class="count">0</span>)</button></li>
              <li class="divider-vertical"></li>
-            <li><button class="btn btn-inverse" href="dislike">Dislike <i class="icon-thumbs-down icon-white"></i></button></li>
+            <li><button class="btn btn-inverse vote-button" data-value="0" href="dislike">Dislike <i class="icon-thumbs-down icon-white" ></i> (<span class="count">0</span>)</button></li>
              <li class="divider-vertical"></li>
-          <li><button class="btn btn-primary">Publish</button></li>
+          <li><button class="btn btn-primary publish-button">Publish</button></li>
 
           </ul>
         </div><!--/.nav-collapse -->
