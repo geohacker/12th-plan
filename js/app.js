@@ -9,9 +9,9 @@ getURLHashParameter = function(name) {
 };
 
 function redrawAllDependentGraphs(mainData)
-{
+{ 
+  console.log(mainData);
   agriRedraw(mainData.agriculture);
-  (mainData.agriculture);
   healthRedraw(mainData.health);
   waterRedraw(mainData.water);
   energyRedraw(mainData.energy);
@@ -117,7 +117,6 @@ $(document).ready(votes.init);
           $(".slabels .slabel[data-name='" + x + "']").html(Math.floor(data[x]));
         }
       }
-
       redrawAllDependentGraphs(data);
     },
 
@@ -357,8 +356,9 @@ function agriDraw() {
 }
 
 function agriRedraw(newValue) {
+
   new_data = [];
-  for(var i=0; i<4; i++){
+  for(var i=0; i<agri_sectors.length; i++){
     new_data.push(agri_sectors[i].ratio * newValue);
   }
 
@@ -438,7 +438,7 @@ function healthDraw() {
 
 function healthRedraw(newValue) {
   new_data = [];
-  for(var i=0; i<4; i++){
+  for(var i=0; i<healthSectors.length; i++){
     new_data.push(healthSectors[i].ratio * newValue);
   }
 
@@ -518,7 +518,7 @@ function waterDraw() {
 
 function waterRedraw(newValue) {
   new_data = [];
-  for(var i=0; i<4; i++){
+  for(var i=0; i<waterSectors.length; i++){
     new_data.push(newValue * (waterSectors[i].ratio/100));
   }
 
@@ -605,7 +605,7 @@ function energyDraw() {
 
 function energyRedraw(newValue) {
   new_data = [];
-  for(var i=0; i<4; i++){
+  for(var i=0; i<energySectors.length; i++){
     new_data.push(energy[2][i]+newValue * (energySectors[i].ratio/100));
   }
 
@@ -686,7 +686,7 @@ function urbanDraw() {
 
 function urbanRedraw(newValue) {
   new_data = [];
-  for(var i=0; i<4; i++){
+  for(var i=0; i<urbanSectors.length; i++){
     new_data.push(newValue * (urbanSectors[i].ratio/100));
   }
 
