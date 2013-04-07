@@ -66,9 +66,11 @@
             <li><a href="#education">Urban Development</a></li>
           </ul>
           <ul class="nav pull-right">
-            <li><button class="btn btn-success" href="like">Like <i class="icon-thumbs-up icon-white"></i></button></li>
+            <li>
+            <input type="text" class="vote-email" placeholder="email"/></li>
+            <li><button class="btn btn-success vote-button" data-value="1" href="like">Like <i class="icon-thumbs-up icon-white" ></i> (<span class="count">0</span>)</button></li>
              <li class="divider-vertical"></li>
-            <li><button class="btn btn-inverse" href="dislike">Dislike <i class="icon-thumbs-down icon-white"></i></button></li>
+            <li><button class="btn btn-inverse vote-button" data-value="0" href="dislike">Dislike <i class="icon-thumbs-down icon-white" ></i> (<span class="count">0</span>)</button></li>
              <li class="divider-vertical"></li>
           <li><button class="btn btn-primary publish-button">Publish</button></li>
 

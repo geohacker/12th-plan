@@ -2,6 +2,65 @@
 
 var API_BASE_URL = "http://localhost/12th-plan/api/public/";
 
+getURLHashParameter = function(name) {
+
+    return decodeURI((RegExp('[#|&]' + name + '=' + '(.+?)(&|$)').exec(location.hash)||[null])[1]
+    );
+};
+
+var votes = {
+  renderVotes: function (likes, dislikes) {
+    $(".vote-button[data-value='1'] .count").html(likes);
+    $(".vote-button[data-value='0'] .count").html(dislikes);
+  },
+
+  load_votes: function (entry_id) {
+    $.ajax({
+        type : "GET",
+        url  : API_BASE_URL + "votes/get/" + entry_id,
+        dataType   : "json",
+        statusCode : {
+            200: function(data) {
+              votes.renderVotes(data.likes, data.dislikes);
+            },
+            404: function() {
+
+            }
+        }
+    });
+  },
+
+  init: function () {
+    $(".vote-button").click(function () {
+      var entry_id = getURLHashParameter("id");
+      var $that = $(this);
+
+      if (entry_id != "undefined") {
+        $.ajax({
+            type : "POST",
+            url  : API_BASE_URL + "votes/vote",
+            data : {
+                email    : $("input.vote-email").val(),
+                entry_id : entry_id,
+                like     : $that.data('value')
+            },
+            dataType   : "json",
+            statusCode : {
+                201: function(data) {
+                  votes.renderVotes(data.likes, data.dislikes);
+                },
+                400: function(data) {
+                    alert("Please provide email. You can only vote once!");
+                }
+            }
+        });
+      }
+    });
+  }
+};
+
+$(document).ready(votes.init);
+
 (function () {
 
   var sliders = {
@@ -88,12 +147,6 @@ var API_BASE_URL = "http://localhost/12th-plan/api/public/";
       }
     },
 
-    getURLHashParameter : function(name) {
-
-        return decodeURI((RegExp('[#|&]' + name + '=' + '(.+?)(&|$)').exec(location.hash)||[null])[1]
-        );
-    },
-
     init: function () {
       sliders.sdata = sliders.original_data;
       sliders.renderSliders(sliders.sdata);
@@ -110,7 +163,7 @@ var API_BASE_URL = "http://localhost/12th-plan/api/public/";
 
 
       // if id given load data
-      var entry_id = sliders.getURLHashParameter('id');
+      var entry_id = getURLHashParameter('id');
 
       if (entry_id != "undefined") {
         $.ajax({
@@ -138,6 +191,8 @@ var API_BASE_URL = "http://localhost/12th-plan/api/public/";
                 }
             }
         });
+
+        votes.load_votes(entry_id);
       }
 
     }
