@@ -291,7 +291,7 @@ $(document).ready(urbanDraw);
 samples = ["11th Plan", "12th Plan Proposed", "Your Allocation"];
 sample_data = [["87", "92"], ["93", "92"], ["92", "85"]];
 
-
+var total = 31762.54;
 agri_sectors = [{name:"Department of Agriculture and Cooperation", code:'DAC', ratio:40.9793784889786},
 {name:"Department of Agricultural Research and Education", code:'DARC', ratio:14.6453994199842},
 {name:"Department of Animal Husbandry, Dairying, and Fisheries", code:'DADF', ratio:8.12652598035282},
@@ -359,7 +359,7 @@ function agriRedraw(newValue) {
 
   new_data = [];
   for(var i=0; i<agri_sectors.length; i++){
-    new_data.push(agri_sectors[i].ratio * newValue);
+    new_data.push(newValue * total * (agri_sectors[i].ratio/100));
   }
 
   newAgridata = agriculture;
@@ -439,7 +439,7 @@ function healthDraw() {
 function healthRedraw(newValue) {
   new_data = [];
   for(var i=0; i<healthSectors.length; i++){
-    new_data.push(healthSectors[i].ratio * newValue);
+    new_data.push(newValue * total * (healthSectors[i].ratio/100));
   }
 
   newHealthData = health;
@@ -519,7 +519,7 @@ function waterDraw() {
 function waterRedraw(newValue) {
   new_data = [];
   for(var i=0; i<waterSectors.length; i++){
-    new_data.push(newValue * (waterSectors[i].ratio/100));
+    new_data.push(newValue * total * (waterSectors[i].ratio/100));
   }
 
   newWaterData = water;
@@ -606,7 +606,7 @@ function energyDraw() {
 function energyRedraw(newValue) {
   new_data = [];
   for(var i=0; i<energySectors.length; i++){
-    new_data.push(energy[2][i]+newValue * (energySectors[i].ratio/100));
+    new_data.push(newValue * total * (energySectors[i].ratio/100));
   }
 
   newenergyData = energy;
@@ -687,7 +687,7 @@ function urbanDraw() {
 function urbanRedraw(newValue) {
   new_data = [];
   for(var i=0; i<urbanSectors.length; i++){
-    new_data.push(newValue * (urbanSectors[i].ratio/100));
+    new_data.push(newValue * total * (urbanSectors[i].ratio/100));
   }
 
   newurbanData = urban;
