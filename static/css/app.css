@@ -1,6 +1,7 @@
 body {
+  margin-top: 40px;
   padding-top: 60px;
-  padding-bottom: 40px;
+  /*padding-bottom: 40px;*/
 }
 .sidebar-nav {
   padding: 9px 0;
@@ -71,14 +72,14 @@ svg {
   width: 100%;
   border-radius: 6px 6px 6px 6px;
 }
-#agriculture svg, #health svg, #water svg, #energy svg, #urban svg {
+#agriculture_chart svg, #health svg, #water svg, #energy svg, #urban svg {
   height: 350px;
 }
 
 .charts {
-  margin-top: 30px;
+  padding-top: 40px;
 }
 
 .vote-email{
-  width: 120px;
+  width: 150px;
 }

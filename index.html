@@ -12,7 +12,7 @@
   <link href="static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
   <link href="static/jquery/jquery-ui.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="static/css/app.css">
-    <link rel="stylesheet" type="text/css" href="static/css/tipsy.css">
+  <link rel="stylesheet" type="text/css" href="static/css/tipsy.css">
 
 
 </head>
@@ -32,7 +32,7 @@
         </label>
 
         <label>Email
-            <input type="text" name="email" />
+          <input type="text" name="email" />
         </label>
 
         <label>Name <small>optional</small>
@@ -57,33 +57,44 @@
         <a class="brand" href="#">Build the Plan</a>
         <div class="nav-collapse collapse">
           <ul class="nav">
-            <li class="active"><a href="#">Plan</a></li>
-            <li><a href="#macro">Macroeconomic</a></li>
-            <li><a href="#agriculture">Agriculture</a></li>
-            <li><a href="#health">Health</a></li>
-            <li><a href="#water">Water &amp; Environment</a></li>
-            <li><a href="#energy">Energy</a></li>
-            <li><a href="#education">Urban Development</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Sectors
+                <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="#agriculture">Agriculture</a></li>
+                <li><a href="#rural">Rural Development</a></li>
+                <li><a href="#health">Health</a></li>
+                <li><a href="#water">Water</a></li>
+                <li><a href="#environment">Environment</a></li>
+                <li><a href="#energy">Energy</a></li>
+                <li><a href="#education">Education &amp; Skill Development</a></li>
+                <li><a href="#education">Urban Development</a></li>
+              </ul>
+            </li>
+            <li class="divider-vertical"></li>
+            <li><a href="#credits">Credits</a></li>
           </ul>
-            <input type="text" class="vote-email navbar-search" placeholder="Email"/>
-          <ul class="nav pull-right">
-             <li class="divider-vertical"></li>
-            <li><button class="btn btn-success vote-button" data-value="1" href="like"><i class="icon-thumbs-up icon-white" ></i> (<span class="count">0</span>)</button></li>
-             <li class="divider-vertical"></li>
-            <li><button class="btn btn-inverse vote-button" data-value="0" href="dislike"><i class="icon-thumbs-down icon-white" ></i> (<span class="count">0</span>)</button></li>
-             <li class="divider-vertical"></li>
-          <li><button class="btn btn-primary publish-button">Publish</button></li>
+<ul class="nav pull-right">
+  <li><input type="text" class="vote-email navbar-search" placeholder="Email"/></li>
+  <li class="divider-vertical"></li>
+  <li><button class="btn btn-success vote-button" data-value="1" href="like"><i class="icon-thumbs-up icon-white" ></i> (<span class="count">0</span>)</button></li>
+  <li class="divider-vertical"></li>
+  <li><button class="btn btn-inverse vote-button" data-value="0" href="dislike"><i class="icon-thumbs-down icon-white" ></i> (<span class="count">0</span>)</button></li>
+  <li class="divider-vertical"></li>
+  <li><button class="btn btn-primary publish-button">Publish</button></li>
 
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
-  </div>
+</ul>
+</div><!--/.nav-collapse -->
+</div>
+</div>
+</div>
 
 
-  <div class="container-fluid">
-    <div id="vis" class="row-fluid">
-      <center>
+<div class="container-fluid">
+  <div id="vis" class="row-fluid">
+    <center>
       <div id="chart" class="span6 offset3">
 
         <div class="row-fluid slabels">
@@ -131,63 +142,72 @@
         <div class="row-fluid">
           <center>
             <br />
-          <button id="reset-main-graph" type="button" class="btn btn-small"><i class="icon-refresh"></i> reset</button>
+            <button id="reset-main-graph" type="button" class="btn btn-small"><i class="icon-refresh"></i> reset</button>
           </center>
         </div>
       </div>
-      </center>
+    </center>
 
-      <div id="controls" class="span4">
-        <div class="row-fluid">
-          <div id="slider_macro"></div>
-        </div>
+    <div id="controls" class="span4">
+      <div class="row-fluid">
+        <div id="slider_macro"></div>
       </div>
-    </div><!--/row-->
-
-    <div id="agriculture" class="row-fluid charts">
-      <center>
-      <div class="span6 offset3">
-      <p>Agriculture and Rural Development</p>
-        <div id="agriculture_chart"></div>
-      </div>
-      </center>
     </div>
+  </div><!--/row-->
+</div>
+<div id="agriculture" class="row-fluid charts">
+  <div class="span6 offset3">
+    <h3>Agriculture</h3>
+    <center>
+      <div id="agriculture_chart"></div>
+    </center>
+  </div>
+</div>
 
-    <div id="health" class="row-fluid charts">
-      <center>
-      <div class="span6 offset3">
+<div id="rural" class="row-fluid charts">
+  <div class="span6 offset3">
+    <h3>Rural Development</h3>
+    <center>
+      <div id="rural_chart"></div>
+    </center>
+  </div>
+</div>
+
+<div id="health" class="row-fluid charts">
+  <center>
+    <div class="span6 offset3">
       <p>Health</p>
-        <div id="health_chart"></div>
-      </div>
-      </center>
+      <div id="health_chart"></div>
     </div>
+  </center>
+</div>
 
-    <div id="water" class="row-fluid charts">
-      <center>
-      <div class="span6 offset3">
+<div id="water" class="row-fluid charts">
+  <center>
+    <div class="span6 offset3">
       <p>Water and Environment</p>
-        <div id="water_chart"></div>
-      </div>
-      </center>
+      <div id="water_chart"></div>
     </div>
+  </center>
+</div>
 
-    <div id="energy" class="row-fluid charts">
-      <center>
-      <div class="span6 offset3">
+<div id="energy" class="row-fluid charts">
+  <center>
+    <div class="span6 offset3">
       <p>Energy</p>
-        <div id="energy_chart"></div>
-      </div>
-      </center>
+      <div id="energy_chart"></div>
     </div>
+  </center>
+</div>
 
-    <div id="urban" class="row-fluid charts">
-      <center>
-      <div class="span6 offset3">
+<div id="urban" class="row-fluid charts">
+  <center>
+    <div class="span6 offset3">
       <p>Urban Development</p>
-        <div id="urban_chart"></div>
-      </div>
-      </center>
+      <div id="urban_chart"></div>
     </div>
+  </center>
+</div>
 
 
 </div><!--/.fluid-container-->
